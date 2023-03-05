@@ -2,7 +2,7 @@
 // const Engineer = require("./lib/Engineer");
 // const Intern = require("./lib/Intern");
 
-import inquirer from "inquirer";
+const inquirer = require("inquirer");
 
 const path = require("path");
 const fs = require("fs");
@@ -11,11 +11,11 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
+const pageTemplate = require("./src/page-template.js");
 
 class teamProfile {
   // Request for information
   // EMPLOYEE - MANAGER
-  // Office number MISSING
   askForManager = () => {
     inquirer
       .prompt([
@@ -34,11 +34,49 @@ class teamProfile {
           message: "What is the manager email:",
           name: "managerEmail",
         },
+        {
+          type: "input",
+          message: "What is the manager office number:",
+          name: "managerNumber",
+        },
       ])
       .then((answer) => {
-        console.log(answer);
+        this.askForNextEmployee();
       });
   };
+
+  // choose who to add next
+  askForNextEmployee = () => {
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          message: "Do you want to:",
+          choices: [
+            "add an engineer",
+            "add a intern",
+            "finish building the team",
+          ],
+          name: "choice",
+        },
+      ])
+      .then((answer) => {
+        // If the user says yes to another employee, run app again, otherwise quit the app and print result
+        if (answer.choice === "add an engineer") {
+          this.askForEngineer();
+        } else if (answer.choice === "add a intern") {
+          this.askForIntern();
+        } else {
+          this.quit();
+        }
+      });
+  };
+
+  quit() {
+    writeFileAsync("./output/team.html", pageTemplate(answer))
+      .then(() => console.log("Success!"))
+      .catch((err) => console.error(err));
+  }
 
   // EMPLOYEE - ENGINEER
   askForEngineer = () => {
@@ -59,14 +97,19 @@ class teamProfile {
           message: "What is the engineer email:",
           name: "engineerEmail",
         },
+        {
+          type: "input",
+          message: "What is the engineer GitHub username:",
+          name: "engineerUsername",
+        },
       ])
       .then((answer) => {
-        console.log(answer);
+        this.askForNextEmployee();
       });
   };
 
   // EMPLOYEE - INTERN
-  askForEngineer = () => {
+  askForIntern = () => {
     inquirer
       .prompt([
         {
@@ -84,36 +127,17 @@ class teamProfile {
           message: "What is the intern email:",
           name: "internEmail",
         },
+        {
+          type: "input",
+          message: "What is the intern school:",
+          name: "internSchool",
+        },
       ])
       .then((answer) => {
-        console.log(answer);
+        this.askForNextEmployee();
       });
   };
-  // as for new employee
-  // askForNewEmployee = () => {
-  //   inquirer
-  //     .prompt([
-  //       {
-  //         type: "confirm",
-  //         message: "Do you want to add a new Employee?",
-  //         name: "choice",
-  //       },
-  //     ])
-  //     .then((answer) => {
-  //       // If the user says yes to another employee, run app again, otherwise quit the app and print result
-  //       if (answer.choice) {
-  //         const newEmployee = new Employee();
-  //       } else {
-  //         return;
-  //       }
-  //     });
-  // };
-  // quit() {
-  //   console.log("\nGoodbye!");
-  //   process.exit(0);
-  // }
 }
-//   writeFileAsync("./output/team.html", generateMarkdown(answers))
-// )
-// .then(() => console.log("Success!"))
-// .catch((err) => console.error(err));
+
+const newTeam = new teamProfile();
+newTeam.askForManager();
