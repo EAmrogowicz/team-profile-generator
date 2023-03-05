@@ -14,8 +14,8 @@
     "url": "git+https://github.com/EAmrogowicz/team-profile-generator.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "EAmrogowicz",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/EAmrogowicz/team-profile-generator/issues"
   },
