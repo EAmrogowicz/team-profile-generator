@@ -1,143 +1,168 @@
-// const Manager = require("./lib/Manager");
-// const Engineer = require("./lib/Engineer");
-// const Intern = require("./lib/Intern");
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
 
 const inquirer = require("inquirer");
 
 const path = require("path");
 const fs = require("fs");
+// support internal API
+const util = require("util");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const render = require("./src/page-template.js");
 const pageTemplate = require("./src/page-template.js");
 
+// returns a version with promises
+const writeFileAsync = util.promisify(fs.writeFile);
+
 class teamProfile {
+  team = [];
+  initiateTeam = async () => {
+    await this.askForManager();
+    await this.askForTeam();
+  };
+
+  getTeam() {
+    return this.team;
+  }
+
+  askForTeam = async () => {
+    while (true) {
+      const nextEmployeeAnswer = await this.askForNextEmployee();
+
+      if (nextEmployeeAnswer === "add an engineer") {
+        await this.askForEngineer();
+      } else if (nextEmployeeAnswer === "add a intern") {
+        await this.askForIntern();
+      } else {
+        break;
+      }
+    }
+  };
   // Request for information
   // EMPLOYEE - MANAGER
-  askForManager = () => {
-    inquirer
-      .prompt([
-        {
-          type: "input",
-          message: "What is the manager name:",
-          name: "managerName",
-        },
-        {
-          type: "input",
-          message: "What is the manager id number:",
-          name: "managerId",
-        },
-        {
-          type: "input",
-          message: "What is the manager email:",
-          name: "managerEmail",
-        },
-        {
-          type: "input",
-          message: "What is the manager office number:",
-          name: "managerNumber",
-        },
-      ])
-      .then((answer) => {
-        this.askForNextEmployee();
-      });
+  askForManager = async () => {
+    const managerAnswers = await inquirer.prompt([
+      {
+        type: "input",
+        message: "What is the manager name:",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is the manager id number:",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is the manager email:",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What is the manager office number:",
+        name: "officeNumber",
+      },
+    ]);
+
+    //convert to employee object
+    const manager = new Manager(managerAnswers);
+    this.team.push(manager);
   };
 
   // choose who to add next
-  askForNextEmployee = () => {
-    inquirer
-      .prompt([
-        {
-          type: "list",
-          message: "Do you want to:",
-          choices: [
-            "add an engineer",
-            "add a intern",
-            "finish building the team",
-          ],
-          name: "choice",
-        },
-      ])
-      .then((answer) => {
-        // If the user says yes to another employee, run app again, otherwise quit the app and print result
-        if (answer.choice === "add an engineer") {
-          this.askForEngineer();
-        } else if (answer.choice === "add a intern") {
-          this.askForIntern();
-        } else {
-          this.quit();
-        }
-      });
+  askForNextEmployee = async () => {
+    const response = await inquirer.prompt([
+      {
+        type: "list",
+        message: "Do you want to:",
+        choices: [
+          "add an engineer",
+          "add a intern",
+          "finish building the team",
+        ],
+        name: "choice",
+      },
+    ]);
+
+    return response.choice;
   };
 
-  quit() {
-    writeFileAsync("./output/team.html", pageTemplate(answer))
-      .then(() => console.log("Success!"))
-      .catch((err) => console.error(err));
-  }
-
   // EMPLOYEE - ENGINEER
-  askForEngineer = () => {
-    inquirer
-      .prompt([
-        {
-          type: "input",
-          message: "What is the engineer name:",
-          name: "engineerName",
-        },
-        {
-          type: "input",
-          message: "What is the engineer id number:",
-          name: "engineerId",
-        },
-        {
-          type: "input",
-          message: "What is the engineer email:",
-          name: "engineerEmail",
-        },
-        {
-          type: "input",
-          message: "What is the engineer GitHub username:",
-          name: "engineerUsername",
-        },
-      ])
-      .then((answer) => {
-        this.askForNextEmployee();
-      });
+  askForEngineer = async () => {
+    const engineerAnswers = await inquirer.prompt([
+      {
+        type: "input",
+        message: "What is the engineer name:",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is the engineer id number:",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is the engineer email:",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What is the engineer GitHub username:",
+        name: "username",
+      },
+    ]);
+    // convert to employee object
+    const engineer = new Engineer(engineerAnswers);
+    this.team.push(engineer);
   };
 
   // EMPLOYEE - INTERN
-  askForIntern = () => {
-    inquirer
-      .prompt([
-        {
-          type: "input",
-          message: "What is the intern name:",
-          name: "internName",
-        },
-        {
-          type: "input",
-          message: "What is the intern id number:",
-          name: "internId",
-        },
-        {
-          type: "input",
-          message: "What is the intern email:",
-          name: "internEmail",
-        },
-        {
-          type: "input",
-          message: "What is the intern school:",
-          name: "internSchool",
-        },
-      ])
-      .then((answer) => {
-        this.askForNextEmployee();
-      });
+  askForIntern = async () => {
+    const internAnswers = await inquirer.prompt([
+      {
+        type: "input",
+        message: "What is the intern name:",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is the intern id number:",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is the intern email:",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What is the intern school:",
+        name: "school",
+      },
+    ]);
+    // convert to intern object
+    const intern = new Intern(internAnswers);
+    this.team.push(intern);
   };
 }
 
-const newTeam = new teamProfile();
-newTeam.askForManager();
+async function renderTeam(team) {
+  try {
+    await writeFileAsync(outputPath, pageTemplate(team));
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function main() {
+  const newTeam = new teamProfile();
+  await newTeam.initiateTeam();
+  const team = newTeam.getTeam();
+
+  await renderTeam(team);
+}
+
+main();
