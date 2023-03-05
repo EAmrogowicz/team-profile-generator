@@ -44,14 +44,14 @@ class teamProfile {
   // Request for information
   // EMPLOYEE - MANAGER
   askForManager = async () => {
-    const managerAnswers = await inquirer.prompt([
+    const answers = await inquirer.prompt([
       {
         type: "input",
         message: "What is the manager name:",
         name: "name",
       },
       {
-        type: "input",
+        type: "number",
         message: "What is the manager id number:",
         name: "id",
       },
@@ -68,7 +68,12 @@ class teamProfile {
     ]);
 
     //convert to employee object
-    const manager = new Manager(managerAnswers);
+    const manager = new Manager(
+      answers.name,
+      answers.id,
+      answers.email,
+      answers.officeNumber
+    );
     this.team.push(manager);
   };
 
@@ -92,14 +97,14 @@ class teamProfile {
 
   // EMPLOYEE - ENGINEER
   askForEngineer = async () => {
-    const engineerAnswers = await inquirer.prompt([
+    const answers = await inquirer.prompt([
       {
         type: "input",
         message: "What is the engineer name:",
         name: "name",
       },
       {
-        type: "input",
+        type: "number",
         message: "What is the engineer id number:",
         name: "id",
       },
@@ -115,20 +120,25 @@ class teamProfile {
       },
     ]);
     // convert to employee object
-    const engineer = new Engineer(engineerAnswers);
+    const engineer = new Engineer(
+      answers.name,
+      answers.id,
+      answers.email,
+      answers.username
+    );
     this.team.push(engineer);
   };
 
   // EMPLOYEE - INTERN
   askForIntern = async () => {
-    const internAnswers = await inquirer.prompt([
+    const answers = await inquirer.prompt([
       {
         type: "input",
         message: "What is the intern name:",
         name: "name",
       },
       {
-        type: "input",
+        type: "number",
         message: "What is the intern id number:",
         name: "id",
       },
@@ -144,7 +154,12 @@ class teamProfile {
       },
     ]);
     // convert to intern object
-    const intern = new Intern(internAnswers);
+    const intern = new Intern(
+      answers.name,
+      answers.id,
+      answers.email,
+      answers.school
+    );
     this.team.push(intern);
   };
 }
