@@ -48,9 +48,10 @@ node index.js
 
 ## Usage
 
-A exa: https://drive.google.com/file/d/15t1H2Wd6E6oVATdp0DHxpzydhdcU2CCY/view
+A sample HTML file generated using the app:
+https://github.com/EAmrogowicz/team-profile-generator/blob/main/output/team.html
 
-GitHub source files: https://github.com/EAmrogowicz/readme-generator
+GitHub source files: https://github.com/EAmrogowicz/team-profile-generator
 
 The following image shows a mock-up of the generated HTML’s appearance and
 functionality:
