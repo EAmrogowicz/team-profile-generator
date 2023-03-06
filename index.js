@@ -3,7 +3,6 @@ const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 
 const inquirer = require("inquirer");
-
 const path = require("path");
 const fs = require("fs");
 // support internal API
@@ -18,16 +17,22 @@ const pageTemplate = require("./src/page-template.js");
 const writeFileAsync = util.promisify(fs.writeFile);
 
 class teamProfile {
+  // empty array to store team profile data
   team = [];
-  initiateTeam = async () => {
+
+  // async function to keep track of its place in a script that calls multiple functions
+  assembleTeam = async () => {
+    // await will pause the execution of the function, waiting for promise to be resolved
     await this.askForManager();
     await this.askForTeam();
   };
 
+  // export array with team information
   getTeam() {
     return this.team;
   }
 
+  // initiate options function:
   askForTeam = async () => {
     while (true) {
       const nextEmployeeAnswer = await this.askForNextEmployee();
@@ -41,6 +46,7 @@ class teamProfile {
       }
     }
   };
+
   // Request for information
   // EMPLOYEE - MANAGER
   askForManager = async () => {
@@ -66,7 +72,6 @@ class teamProfile {
         name: "officeNumber",
       },
     ]);
-
     //convert to employee object
     const manager = new Manager(
       answers.name,
@@ -164,7 +169,7 @@ class teamProfile {
   };
 }
 
-async function renderTeam(team) {
+async function render(team) {
   try {
     await writeFileAsync(outputPath, pageTemplate(team));
   } catch (e) {
@@ -173,11 +178,14 @@ async function renderTeam(team) {
 }
 
 async function main() {
+  // creates new instance from class
   const newTeam = new teamProfile();
-  await newTeam.initiateTeam();
+  await newTeam.assembleTeam();
+  // export team
   const team = newTeam.getTeam();
-
-  await renderTeam(team);
+  // render to html
+  await render(team);
 }
 
+// invoke the code
 main();
