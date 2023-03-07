@@ -17,7 +17,6 @@ summaries for each person.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Requirements](#requirements)
-- [Test Status](#test-status)
 - [Credits](#credits)
 - [License](#license)
 
